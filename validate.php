@@ -1,7 +1,5 @@
 <?php
 
-require_once 'error.php';
-
 define('STRING_VALIDATOR', 'string');
 define('ARRAY_VALIDATOR', 'array');
 

@@ -5,7 +5,7 @@ by afeique sheikh
 This is a simple PHP class for quickly validating form inputs using method chaining.
 
 ## dependencies
-Requires my [error class](https://github.com/afeique/error). Place the `error` directory in the same directory as the `validator` directory, or just modify the `require_once()` statements to your liking.
+Requires my [error class](https://github.com/afeique/error) to be called via `include()` or `require()` beforehand.
 
 ## comments
 * Usage information will be added at a later date.
