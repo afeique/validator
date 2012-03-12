@@ -1,4 +1,4 @@
-# error class
+# validator class
 by afeique sheikh
 
 ## description
