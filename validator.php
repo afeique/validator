@@ -1,7 +1,7 @@
 <?php
 
-define('STRING_VALIDATOR', 'string');
-define('ARRAY_VALIDATOR', 'array');
+define('STRING_VALIDATOR','string');
+define('ARRAY_VALIDATOR','array');
 
 /**
  * the validator class is used to validate form inputs
@@ -53,18 +53,32 @@ class validator {
     if (!is_string($string))
       throw error::expecting_string();
     
-    $validator = new validate(STRING_VALIDATOR, $string);
+    $validator = new validator(STRING_VALIDATOR, $string);
     
     return $validator;
   }
   
   public static function ray(array $array) {
-    $validator = new validate(ARRAY_VALIDATOR, $array);
+    $validator = new validator(ARRAY_VALIDATOR, $array);
     
     return $validator;
   }
   
-  public function min_length($length) {
+  public function alphanum() {
+    if ($this->type == STRING_VALIDATOR) {
+      if (preg_match('/[^\p{L}\p{N}]/', $this->what))
+        $this->errors[] = 'alphanumeric characters only';
+    } elseif ($this->type == ARRAY_VALIDATOR) {
+      foreach ($this->what as $i => $what) {
+        if (preg_match('/[^\p{L}\p{N}]/', $what))
+          $this->errors[$i] = 'alphanumeric entries only';
+      }
+    }
+    
+    return $this;
+  }
+  
+  public function minlen($length) {
     if (!is_int($length) || $length < 0)
       throw error::expecting_unsigned_int();
     
@@ -74,14 +88,14 @@ class validator {
     } elseif ($this->type == ARRAY_VALIDATOR) {
       foreach ($this->what as $i => $what) {
         if (strlen($what) < $length)
-          $this->errors[] = 'each entry min length: '.$length;
+          $this->errors[$i] = 'entry min length: '.$length;
       }
     }
     
     return $this;
   }
   
-  public function max_length($length) {
+  public function maxlen($length) {
     if (!is_int($length) || $length <= 0)
       throw error::expecting_unsigned_int_gt_zero();
     
@@ -91,7 +105,7 @@ class validator {
     } elseif ($this->type == ARRAY_VALIDATOR) {
       foreach ($this->what as $i => $what) {
         if (strlen($what) > $length)
-          $this->errors[] = 'each entry max length: '.$length;
+          $this->errors[$i] = 'entry max length: '.$length;
       }
     }
     
@@ -112,7 +126,7 @@ class validator {
     return $this;
   }
   
-  public function not_empty() {
+  public function nonempty() {
     $length = 1;
     
     if ($this->type == STRING_VALIDATOR) {
@@ -190,6 +204,10 @@ class validator {
   
   public function errors() {
     return implode(', ', $this->errors);
+  }
+  
+  public function okay() {
+    return (empty($this->errors));
   }
   
   public function __toString() {
